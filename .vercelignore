@@ -1,0 +1,6 @@
+# Prevent uploading secrets and local junk with `vercel deploy` (respects this + .gitignore).
+.env
+.env.*
+!.env.example
+!.env.production.example
+node_modules

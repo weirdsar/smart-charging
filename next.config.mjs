@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  experimental: {
+    // Avoid bundling ~600MB of static product images into the upload API serverless bundle (Vercel 300MB limit).
+    outputFileTracingExcludes: {
+      '/api/upload': ['./public/images/**/*'],
+    },
+  },
   images: {
     remotePatterns: [
       { protocol: 'http', hostname: 'localhost', port: '3000', pathname: '/**' },
