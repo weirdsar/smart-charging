@@ -79,6 +79,7 @@ Persistent project context for long sessions. Update after major milestones. No 
 
 | Date | Change |
 |------|--------|
+| 2026-03-22 | **Deploy prep:** репозиторий **запушен** на GitHub (`main` → `git@github.com:weirdsar/smart-charging.git`). Добавлены **`vercel.json`** (`pnpm install --frozen-lockfile`, `pnpm run build`), **`docs/DEPLOY_VERCEL.md`** — чеклист Neon → `db push` / `seed` → Vercel env → домен. |
 | 2026-03-21 | **STEP B:** Оставшиеся admin API — **`/api/settings`** (GET: map ключ→значение, POST: upsert `z.record` строк), **`/api/pages`** (GET список), **`/api/pages/[id]`** (GET/PUT/DELETE, `revalidatePath`), **`/api/filter-pages`** + **`/api/filter-pages/[id]`** (CRUD; POST требует **`categoryId`** + опционально **`appliedFilters`** как JSON-объект). Заглушки 501 сняты. |
 | 2026-03-21 | **STEP A:** Публичные **блог / проекты / документы** переведены на **Prisma** — `src/app/(site)/blog/page.tsx`, `blog/[slug]/page.tsx`, `projects/page.tsx`, `projects/[slug]/page.tsx`, `documents/page.tsx`; убраны `MOCK_BLOG_*`, документы и блоки блога из `mockData.ts` (остались `MOCK_PRODUCTS`, `MOCK_PROJECTS`, FAQ, отзывы). `dynamic = 'force-dynamic'`; URL в **sitemap** соответствуют контенту из БД. |
 | 2026-03-21 | **Project memory audit** — `PROJECT_MEMORY.md` fully synced with codebase: Current Status, Backlog, Known Issues; removed obsolete «CatalogPreview = MOCK» note; documented blog/projects public vs Prisma mismatch and remaining **501** APIs. |
@@ -170,4 +171,11 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=""
 
 ---
 
-*Last memory sync: **2026-03-21** — STEP B (settings, pages, filter-pages APIs); `next build` OK.*
+*Last memory sync: **2026-03-22** — GitHub push + Vercel/Neon deploy docs (`docs/DEPLOY_VERCEL.md`, `vercel.json`).*
+
+---
+
+## Production deploy (Vercel + Neon)
+
+- **GitHub:** [weirdsar/smart-charging](https://github.com/weirdsar/smart-charging) — `main` отслеживается для CI.
+- **Подробный чеклист:** `docs/DEPLOY_VERCEL.md` (Neon `DATABASE_URL`, локальный `pnpm prisma db push` + `db seed`, импорт в Vercel, переменные окружения, DNS для `tts64.ru`).
