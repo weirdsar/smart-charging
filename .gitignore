@@ -27,6 +27,21 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
+
+# uploads (admin file storage)
+/uploads
+
+# Large product photos added locally (SVG placeholders & structure stay in repo)
+/public/images/products/**/*.jpg
+/public/images/products/**/*.jpeg
+/public/images/products/**/*.png
+/public/images/products/**/*.webp
+/public/images/products/**/*.gif
+
+# prisma (local sqlite fallback if used)
+*.db
+*.db-journal
 
 # vercel
 .vercel

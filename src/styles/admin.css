@@ -1,0 +1,4 @@
+/* Minimal admin overrides (Tailwind-first). */
+.admin-shell {
+  min-height: 100vh;
+}

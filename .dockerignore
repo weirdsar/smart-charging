@@ -1,0 +1,21 @@
+# Dependencies & build output (rebuilt in image)
+node_modules
+.next
+out
+
+# Git & editor
+.git
+.gitignore
+.cursor
+*.md
+!README.md
+
+# Env & secrets (inject at runtime)
+.env
+.env.*
+!.env.production.example
+
+# Dev / test
+coverage
+.turbo
+tsconfig.tsbuildinfo

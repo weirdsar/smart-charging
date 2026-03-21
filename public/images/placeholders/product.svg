@@ -1,0 +1,6 @@
+<svg width="600" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="600" fill="#111111"/>
+  <rect x="40" y="40" width="520" height="520" rx="12" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
+  <text x="300" y="290" text-anchor="middle" fill="#666666" font-size="22" font-family="system-ui,sans-serif">Фото товара</text>
+  <text x="300" y="330" text-anchor="middle" fill="#FF6B00" font-size="14" font-family="system-ui,sans-serif">TSS / Pandora</text>
+</svg>

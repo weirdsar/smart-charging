@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# smart-charging (tts64.ru)
 
-## Getting Started
+Next.js 14 (App Router) site for ООО «Умная зарядка» — lead generation, catalog, admin CMS.
 
-First, run the development server:
+See `.cursorrules` for stack, structure, and conventions. Session handoff: `PROJECT_MEMORY.md`.
+
+**Cursor:** open this directory (`smart-charging/`) as the workspace root so `.cursorrules` is picked up (not a parent folder that only contains specs).
+
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.example .env.local
+# Ensure DATABASE_URL matches your Postgres (see docker-compose.yml for local defaults)
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Package manager: **pnpm** (`corepack enable pnpm` or `npx pnpm@9`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Local database
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+docker compose up -d
+export DATABASE_URL="postgresql://smartcharging:localdev123@127.0.0.1:5432/smart_charging?schema=public"
+pnpm prisma db push
+```
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Script          | Description               |
+| --------------- | ------------------------- |
+| `pnpm dev`      | Next.js dev server        |
+| `pnpm build`    | `prisma generate` + build |
+| `pnpm lint`     | ESLint                    |
+| `pnpm format`   | Prettier (writes)         |
+| `pnpm db:*`     | Prisma shortcuts          |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Config note
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Next.js **14.2** loads `next.config.mjs` / `next.config.js` only — **`next.config.ts` is not supported** in this version. Image `remotePatterns` live in `next.config.mjs`.
 
-## Deploy on Vercel
+## Placeholder scaffolding
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`scripts/generate-placeholders.mjs` was used once to emit route/component stubs; safe to delete or keep for reference.

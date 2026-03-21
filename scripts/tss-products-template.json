@@ -1,0 +1,33 @@
+[
+  {
+    "title": "TSS SGG 3000EN",
+    "model": "SGG 3000EN",
+    "slug": "tss-sgg-3000en",
+    "categoryType": "GENERATORS_PORTABLE",
+    "price": 45000,
+    "priceOld": null,
+    "powerKw": 3,
+    "fuelType": "PETROL",
+    "hasAvr": false,
+    "noiseLevelDb": 69,
+    "shortDescription": "Портативный бензиновый генератор мощностью 3 кВт для дома и дачи",
+    "description": "<p>Надёжный бензиновый генератор TSS SGG 3000EN мощностью 3 кВт...</p>",
+    "specs": {
+      "engine": "4-тактный OHV",
+      "fuelConsumption": "1.5 л/ч при 75% нагрузки",
+      "weight": "42 кг",
+      "dimensions": "605×435×435 мм",
+      "noiseLevel": "69 дБ на расстоянии 7 м",
+      "voltage": "220 В",
+      "startType": "ручной"
+    },
+    "images": [
+      "/images/products/generators/portable/tss-sgg-3000en-1.jpg",
+      "/images/products/generators/portable/tss-sgg-3000en-2.jpg"
+    ],
+    "inStock": true,
+    "published": true,
+    "seoTitle": "TSS SGG 3000EN — купить генератор 3 кВт в Саратове",
+    "seoDescription": "Портативный бензиновый генератор TSS SGG 3000EN мощностью 3 кВт с доставкой и монтажом в Саратове. Официальный дилер TSS."
+  }
+]

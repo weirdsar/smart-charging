@@ -4,23 +4,75 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "dev:clean": "rm -rf .next && rm -f tsconfig.tsbuildinfo && next dev",
+    "dev:chrome": "BROWSER='google chrome' next dev",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "nodemailer@^6.8.0": "7"
+      }
+    }
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.1",
+    "@headlessui/react": "^2.2.9",
+    "@hookform/resolvers": "^5.2.2",
+    "@prisma/client": "5",
+    "@tiptap/extension-image": "^3.20.4",
+    "@tiptap/extension-link": "^3.20.4",
+    "@tiptap/extension-placeholder": "^3.20.4",
+    "@tiptap/react": "^3.20.4",
+    "@tiptap/starter-kit": "^3.20.4",
+    "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "dompurify": "^3.3.3",
+    "framer-motion": "^12.38.0",
+    "sanitize-html": "^2.17.0",
+    "grammy": "^1.41.1",
+    "lucide-react": "^0.577.0",
+    "next": "14.2.35",
+    "next-auth": "5.0.0-beta.30",
+    "nodemailer": "^7.0.7",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.35"
+    "react-hook-form": "^7.71.2",
+    "sharp": "^0.34.5",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/dompurify": "^3.2.0",
     "@types/node": "^20",
+    "@types/nodemailer": "^7.0.11",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.35"
+    "eslint-config-next": "14.2.35",
+    "eslint-config-prettier": "^10.1.8",
+    "postcss": "^8",
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "prisma": "5",
+    "@types/sanitize-html": "^2.13.0",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
   }
 }
