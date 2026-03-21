@@ -51,8 +51,26 @@ Build uses `pnpm run build` (`prisma generate` + `next build`). No DB is require
 
 ## Step 8 — Domain `tts64.ru`
 
-Vercel → Project → **Settings → Domains** → add `tts64.ru` / `www`.  
-At registrar (e.g. Beget): DNS records exactly as Vercel shows (often **A** or **CNAME** to Vercel).
+### Done on Vercel (CLI or dashboard)
+
+- `tts64.ru` and `www.tts64.ru` are attached to project **smart-charging**.
+
+### DNS at registrar (Beget)
+
+Vercel expects **A** records (recommended; as of 2026-03):
+
+| Type | Host / name | Value |
+|------|-------------|--------|
+| **A** | `@` (or `tts64.ru`) | `76.76.21.21` |
+| **A** | `www` | `76.76.21.21` |
+
+Do **not** change nameservers to Vercel unless you intend to move DNS fully to Vercel (`ns1.vercel-dns.com` / `ns2.vercel-dns.com`). With Beget NS, only add the **A** records above.
+
+After propagation (minutes–hours), Vercel verifies the domain automatically; you may get an email from Vercel.
+
+### Optional
+
+- In Vercel → Domains: set **primary** to `https://tts64.ru` and redirect `www` → apex (or the reverse), per your SEO preference.
 
 ## Updates
 
