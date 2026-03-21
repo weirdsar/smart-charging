@@ -177,5 +177,6 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=""
 
 ## Production deploy (Vercel + Neon)
 
-- **GitHub:** [weirdsar/smart-charging](https://github.com/weirdsar/smart-charging) — `main` отслеживается для CI.
-- **Подробный чеклист:** `docs/DEPLOY_VERCEL.md` (Neon `DATABASE_URL`, локальный `pnpm prisma db push` + `db seed`, импорт в Vercel, переменные окружения, DNS для `tts64.ru`).
+- **GitHub:** [weirdsar/smart-charging](https://github.com/weirdsar/smart-charging) — `main` пушится; **подключите репозиторий в Vercel** (Settings → Git), если ещё не сделано — иначе нет автодеплоя и Preview env.
+- **Vercel production URL:** [smart-charging-gray.vercel.app](https://smart-charging-gray.vercel.app) (шаг 5–6 выполнен: env в Production + деплой).
+- **Подробный чеклист:** `docs/DEPLOY_VERCEL.md` (Neon, Prisma, env, DNS `tts64.ru`).
