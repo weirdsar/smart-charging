@@ -11,7 +11,6 @@ import {
 } from '@/lib/constants';
 import { motion } from 'framer-motion';
 import { ArrowRight, Phone } from 'lucide-react';
-import Image from 'next/image';
 import { useState } from 'react';
 
 export default function HeroSection() {
@@ -108,45 +107,39 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        <motion.div
-          variants={fadeInUp}
-          initial="hidden"
-          animate="visible"
-          custom={0.45}
-          className="relative mt-10 flex w-full max-w-md flex-shrink-0 flex-col items-center justify-center lg:mt-0 lg:w-[40%]"
-        >
+        {/* No Framer Motion here: `hidden: { opacity: 0 }` on the image column could stick after hydration and hide hero photos on some clients. */}
+        <div className="relative mt-10 flex w-full max-w-md flex-shrink-0 flex-col items-center justify-center lg:mt-0 lg:w-[40%]">
           <div className="absolute -inset-4 -z-10 rounded-2xl bg-accent/10 blur-3xl" aria-hidden />
           <div className="flex w-full max-w-md flex-col gap-3">
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border-2 border-accent/40 bg-surface shadow-lg">
-              <Image
+              {/* Native img: avoids next/image layout edge cases; assets live under /public/content */}
+              <img
                 src={heroPrimarySrc}
                 alt="Генераторы и зарядные станции TSS и Pandora — официальный дилер в Саратове"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) min(100vw - 2rem, 28rem), 40vw"
-                priority
-                unoptimized={
-                  heroPrimarySrc.endsWith('.svg') || heroPrimarySrc.startsWith('/content/')
-                }
+                width={800}
+                height={600}
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 onError={() => setHeroPrimarySrc(PLACEHOLDER_PRODUCT_IMAGE)}
               />
             </div>
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border-2 border-accent/30 bg-surface shadow-lg">
-              <Image
+              <img
                 src={heroSecondarySrc}
                 alt="Оборудование TSS и Pandora — монтаж и сервис в Саратове"
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) min(100vw - 2rem, 28rem), 40vw"
-                priority
-                unoptimized={
-                  heroSecondarySrc.endsWith('.svg') || heroSecondarySrc.startsWith('/content/')
-                }
+                width={800}
+                height={600}
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 onError={() => setHeroSecondarySrc(PLACEHOLDER_PRODUCT_IMAGE)}
               />
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
