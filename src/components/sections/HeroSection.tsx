@@ -125,7 +125,9 @@ export default function HeroSection() {
                 className="object-cover"
                 sizes="(max-width: 1024px) min(100vw - 2rem, 28rem), 40vw"
                 priority
-                unoptimized={heroPrimarySrc.endsWith('.svg')}
+                unoptimized={
+                  heroPrimarySrc.endsWith('.svg') || heroPrimarySrc.startsWith('/content/')
+                }
                 onError={() => setHeroPrimarySrc(PLACEHOLDER_PRODUCT_IMAGE)}
               />
             </div>
@@ -137,7 +139,9 @@ export default function HeroSection() {
                 className="object-cover"
                 sizes="(max-width: 1024px) min(100vw - 2rem, 28rem), 40vw"
                 priority
-                unoptimized={heroSecondarySrc.endsWith('.svg')}
+                unoptimized={
+                  heroSecondarySrc.endsWith('.svg') || heroSecondarySrc.startsWith('/content/')
+                }
                 onError={() => setHeroSecondarySrc(PLACEHOLDER_PRODUCT_IMAGE)}
               />
             </div>
