@@ -181,4 +181,5 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=""
 - **Vercel production URL:** [smart-charging-gray.vercel.app](https://smart-charging-gray.vercel.app) (шаг 5–6: env + деплой).
 - **Домены в Vercel:** `tts64.ru`, `www.tts64.ru` — добавлены; **осталось в Beget:** A-записи на `76.76.21.21` для `@` и `www` (см. `docs/DEPLOY_VERCEL.md`).
 - **Git → Vercel:** подключение репозитория из CLI падает без OAuth в браузере — в [Vercel → Project → Settings → Git](https://vercel.com/dashboard) подключите `weirdsar/smart-charging` вручную.
+- **Preview URL + 401:** длинные URL вида `*-weirdsar-5930s-projects.vercel.app` могут быть под **Deployment Protection** — без SSO не откроются ни страница, ни `/content/main*.png`. Публичная проверка: **tts64.ru** или **smart-charging-gray.vercel.app** (см. `docs/DEPLOY_VERCEL.md`).
 - **Подробный чеклист:** `docs/DEPLOY_VERCEL.md`.

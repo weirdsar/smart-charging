@@ -81,3 +81,16 @@ git push origin main
 ```
 
 Vercel redeploys automatically.
+
+## Troubleshooting: preview URL `401` and “missing” hero images
+
+**Symptom:** A deployment URL like `https://smart-charging-…-weirdsar-5930s-projects.vercel.app` returns **401 Unauthorized** (and tools such as `curl` or automated browsers cannot load `/` or `/content/main1.png` without logging in).
+
+**Cause:** [Vercel Deployment Protection](https://vercel.com/docs/deployment-protection) (SSO / password) on **Preview** deployments. The page may work in your logged-in browser, but unauthenticated checks fail; static assets on that host are protected the same way.
+
+**What to use instead for public checks**
+
+- Production: **https://tts64.ru** (after DNS) or the team production alias, e.g. **https://smart-charging-gray.vercel.app**
+- Hero images are at **`/content/main1.png`** and **`/content/main2.png`** (also used with `next/image` `unoptimized` for `/content/` paths).
+
+**If you need previews to be public:** Vercel → Project → **Settings → Deployment Protection** → adjust protection for Preview (or use a [protection bypass](https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/overview) for automation).
