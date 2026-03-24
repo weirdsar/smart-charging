@@ -57,9 +57,8 @@ export default function FilterSidebar({ showAvrFilter }: FilterSidebarProps) {
         <label className="mb-2 block text-sm font-medium text-text-primary">Сортировка</label>
         <Select
           options={[
-            { value: '', label: 'По умолчанию' },
-            { value: 'price_asc', label: 'Цена: по возрастанию' },
-            { value: 'price_desc', label: 'Цена: по убыванию' },
+            { value: '', label: 'Цена: по возрастанию (0 ₽ в конце)' },
+            { value: 'price_desc', label: 'Цена: по убыванию (0 ₽ в конце)' },
             { value: 'power_desc', label: 'Мощность: по убыванию' },
           ]}
           value={sortValue}

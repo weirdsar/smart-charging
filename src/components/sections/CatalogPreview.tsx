@@ -79,27 +79,35 @@ function previewImageSrc(url: string | null | undefined): string {
 }
 
 export default async function CatalogPreview() {
-  const [products, categoryCoverRows] = await Promise.all([
-    prisma.product.findMany({
-      where: { published: true, inStock: true },
-      orderBy: { createdAt: 'desc' },
-      take: 4,
-      include: { category: { select: { type: true } } },
-    }),
+  const [featuredIdRows, categoryCoverRows] = await Promise.all([
+    prisma.$queryRaw<{ id: string }[]>`
+      SELECT id FROM products
+      WHERE published = true AND in_stock = true
+      ORDER BY (price = 0) ASC, price ASC
+      LIMIT 4
+    `,
     Promise.all(
       CATEGORY_CARDS.map((cat) =>
-        prisma.product.findFirst({
-          where: {
-            published: true,
-            inStock: true,
-            category: { type: cat.categoryType },
-          },
-          orderBy: { createdAt: 'desc' },
-          select: { images: true },
-        })
+        prisma.$queryRaw<Array<{ images: unknown }>>`
+          SELECT p.images FROM products p
+          INNER JOIN categories c ON c.id = p.category_id
+          WHERE p.published = true
+            AND p.in_stock = true
+            AND c.type = ${cat.categoryType}::"CategoryType"
+          ORDER BY (p.price = 0) ASC, p.price ASC
+          LIMIT 1
+        `.then((rows) => rows[0] ?? null)
       )
     ),
   ]);
+
+  const featuredIds = featuredIdRows.map((r) => r.id);
+  const productsUnordered = await prisma.product.findMany({
+    where: { id: { in: featuredIds } },
+    include: { category: { select: { type: true } } },
+  });
+  const byId = new Map(productsUnordered.map((p) => [p.id, p]));
+  const products = featuredIds.map((id) => byId.get(id)).filter((p): p is NonNullable<typeof p> => p != null);
 
   const categoryCoverSrc = CATEGORY_CARDS.map((_, i) => {
     const row = categoryCoverRows[i];

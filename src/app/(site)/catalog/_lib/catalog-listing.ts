@@ -1,12 +1,41 @@
 import { productToCatalogItem } from '@/lib/catalog';
 import { prisma } from '@/lib/prisma';
-import type { CategoryType, Prisma } from '@prisma/client';
+import { Prisma, type CategoryType, type Product } from '@prisma/client';
 
 export interface CatalogSearchParams {
   page?: string;
   search?: string;
   sort?: string;
   avr?: string;
+}
+
+function buildWhereSql(
+  categoryId: string,
+  search: string,
+  avrFilter: boolean
+): Prisma.Sql {
+  const parts: Prisma.Sql[] = [
+    Prisma.sql`category_id = ${categoryId}`,
+    Prisma.sql`published = true`,
+  ];
+  if (search) {
+    parts.push(Prisma.sql`title ILIKE ${'%' + search + '%'}`);
+  }
+  if (avrFilter) {
+    parts.push(Prisma.sql`has_avr = true`);
+  }
+  return Prisma.join(parts, ' AND ');
+}
+
+function orderSql(sort: string): Prisma.Sql {
+  switch (sort) {
+    case 'price_desc':
+      return Prisma.sql`ORDER BY (price = 0) ASC, price DESC`;
+    case 'power_desc':
+      return Prisma.sql`ORDER BY power_kw DESC NULLS LAST`;
+    default:
+      return Prisma.sql`ORDER BY (price = 0) ASC, price ASC`;
+  }
 }
 
 export async function getCategoryListing(
@@ -34,28 +63,26 @@ export async function getCategoryListing(
     ...(avrFilter ? { hasAvr: true } : {}),
   };
 
-  const orderBy: Prisma.ProductOrderByWithRelationInput = (() => {
-    switch (sort) {
-      case 'price_asc':
-        return { price: 'asc' };
-      case 'price_desc':
-        return { price: 'desc' };
-      case 'power_desc':
-        return { powerKw: 'desc' };
-      default:
-        return { createdAt: 'desc' };
-    }
-  })();
+  const whereSql = buildWhereSql(category.id, search, avrFilter);
+  const order = orderSql(sort);
+  const offset = (page - 1) * limit;
 
-  const [rows, total] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      orderBy,
-      skip: (page - 1) * limit,
-      take: limit,
-    }),
+  const [idRows, total] = await Promise.all([
+    prisma.$queryRaw<{ id: string }[]>`
+      SELECT id FROM products
+      WHERE ${whereSql}
+      ${order}
+      LIMIT ${limit} OFFSET ${offset}
+    `,
     prisma.product.count({ where }),
   ]);
+
+  const ids = idRows.map((r) => r.id);
+  const rowsUnordered = await prisma.product.findMany({
+    where: { id: { in: ids } },
+  });
+  const byId = new Map(rowsUnordered.map((p) => [p.id, p]));
+  const rows: Product[] = ids.map((id) => byId.get(id)).filter((p): p is Product => p != null);
 
   return {
     category,
