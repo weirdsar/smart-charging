@@ -132,7 +132,7 @@ export default function HeroSection() {
                 src={heroSecondarySrc}
                 alt="Оборудование TSS и Pandora — монтаж и сервис в Саратове"
                 fill
-                className="object-cover"
+                className="object-contain object-center"
                 sizes="(max-width: 1024px) min(100vw - 2rem, 28rem), 40vw"
                 priority
                 unoptimized={
