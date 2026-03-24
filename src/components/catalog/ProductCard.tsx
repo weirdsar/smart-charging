@@ -5,6 +5,7 @@ import { PLACEHOLDER_PRODUCT_IMAGE } from '@/lib/constants';
 import type { IProduct } from '@/types';
 import { formatPrice } from '@/lib/utils';
 import { Eye } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -26,6 +27,8 @@ type ProductCardProduct = Pick<
 interface ProductCardProps {
   product: ProductCardProduct;
   href: string;
+  /** First screen: eager + high fetch priority so LCP isn’t blocked by lazy images. */
+  imagePriority?: boolean;
 }
 
 function fuelLabel(fuel: string | null | undefined): string {
@@ -45,7 +48,11 @@ function fuelLabel(fuel: string | null | undefined): string {
   }
 }
 
-export default function ProductCard({ product, href }: ProductCardProps) {
+/** Grid: max-w-7xl, 1 / 2 / 3 / 4 columns — width hint for responsive srcset. */
+const CARD_IMAGE_SIZES =
+  '(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw';
+
+export default function ProductCard({ product, href, imagePriority = false }: ProductCardProps) {
   const primaryUrl = product.images?.[0] ?? PLACEHOLDER_PRODUCT_IMAGE;
   const [imageSrc, setImageSrc] = useState(primaryUrl);
   const fuel = fuelLabel(product.fuelType);
@@ -54,16 +61,22 @@ export default function ProductCard({ product, href }: ProductCardProps) {
     setImageSrc(product.images?.[0] ?? PLACEHOLDER_PRODUCT_IMAGE);
   }, [product.id, product.images?.[0]]);
 
+  const unoptimized =
+    imageSrc.endsWith('.svg') || imageSrc.startsWith('data:');
+
   return (
     <Card padding="none" hover>
       <div className="relative">
         <div className="relative aspect-square w-full overflow-hidden rounded-t-lg bg-surface-light">
-          {/* eslint-disable-next-line @next/next/no-img-element -- remote CDN + local placeholders */}
-          <img
+          <Image
             src={imageSrc}
             alt={`${product.title} — изображение`}
-            className="absolute inset-0 h-full w-full object-cover"
-            loading="lazy"
+            fill
+            className="object-cover"
+            sizes={CARD_IMAGE_SIZES}
+            priority={imagePriority}
+            quality={75}
+            unoptimized={unoptimized}
             referrerPolicy="no-referrer"
             onError={() => setImageSrc(PLACEHOLDER_PRODUCT_IMAGE)}
           />
