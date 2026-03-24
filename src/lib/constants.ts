@@ -23,11 +23,14 @@ export const PLACEHOLDER_BLOG_IMAGE = '/images/placeholders/blog.svg';
 export const SITE_BACKGROUND_IMAGE = '/images/backgrounds/site-bg.png';
 
 /**
- * Homepage hero — files under `public/content/`. Appends `?v=<short git sha>` on Vercel so edge
- * cache does not keep serving an older file after replacing images with the same name.
+ * Homepage hero — `public/content/main1.png`, `public/content/main2.png`.
+ * `?v=` comes from build-time hash of both files (see `next.config.mjs`) + Vercel git SHA fallback,
+ * so CDN always fetches new bytes when images change but filenames stay the same.
  */
 const heroCacheBust =
-  process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? '';
+  process.env.NEXT_PUBLIC_HERO_CONTENT_HASH?.trim() ||
+  process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ||
+  '';
 const heroQuery = heroCacheBust === '' ? '' : `?v=${heroCacheBust}`;
 
 export const HOME_HERO_IMAGE = `/content/main1.png${heroQuery}`;
