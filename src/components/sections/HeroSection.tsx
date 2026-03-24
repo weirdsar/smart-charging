@@ -3,21 +3,17 @@
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { fadeInUp } from '@/lib/animations';
-import {
-  COMPANY_PHONE,
-  HOME_HERO_IMAGE,
-  HOME_HERO_IMAGE_SECONDARY,
-  PLACEHOLDER_PRODUCT_IMAGE,
-} from '@/lib/constants';
+import { COMPANY_PHONE, PLACEHOLDER_PRODUCT_IMAGE } from '@/lib/constants';
+import { HERO_MAIN1, HERO_MAIN2 } from '@/lib/hero-images';
 import { motion } from 'framer-motion';
 import { ArrowRight, Phone } from 'lucide-react';
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
 import { useState } from 'react';
 
 export default function HeroSection() {
   const telHref = `tel:${COMPANY_PHONE.replace(/\s/g, '')}`;
-  const [heroPrimarySrc, setHeroPrimarySrc] = useState(HOME_HERO_IMAGE);
-  const [heroSecondarySrc, setHeroSecondarySrc] = useState(HOME_HERO_IMAGE_SECONDARY);
+  const [heroPrimarySrc, setHeroPrimarySrc] = useState<string | StaticImageData>(HERO_MAIN1);
+  const [heroSecondarySrc, setHeroSecondarySrc] = useState<string | StaticImageData>(HERO_MAIN2);
 
   return (
     <section className="relative min-h-[85vh] overflow-hidden bg-gradient-to-br from-primary via-primary to-surface lg:min-h-[calc(100vh-4rem)]">
@@ -125,7 +121,9 @@ export default function HeroSection() {
                 className="object-cover"
                 sizes="(max-width: 1024px) min(100vw - 2rem, 28rem), 40vw"
                 priority
-                unoptimized={heroPrimarySrc.endsWith('.svg')}
+                unoptimized={
+                  typeof heroPrimarySrc === 'string' && heroPrimarySrc.endsWith('.svg')
+                }
                 onError={() => setHeroPrimarySrc(PLACEHOLDER_PRODUCT_IMAGE)}
               />
             </div>
@@ -137,7 +135,9 @@ export default function HeroSection() {
                 className="object-cover"
                 sizes="(max-width: 1024px) min(100vw - 2rem, 28rem), 40vw"
                 priority
-                unoptimized={heroSecondarySrc.endsWith('.svg')}
+                unoptimized={
+                  typeof heroSecondarySrc === 'string' && heroSecondarySrc.endsWith('.svg')
+                }
                 onError={() => setHeroSecondarySrc(PLACEHOLDER_PRODUCT_IMAGE)}
               />
             </div>

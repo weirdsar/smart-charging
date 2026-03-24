@@ -7,22 +7,23 @@ import ProjectsCarousel from '@/components/sections/ProjectsCarousel';
 import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import { getHomepageProjects } from '@/lib/homepage-data';
 import type { Metadata } from 'next';
-import { HOME_HERO_IMAGE, HOME_HERO_IMAGE_SECONDARY, SITE_URL } from '@/lib/constants';
+import { HERO_MAIN1, HERO_MAIN2 } from '@/lib/hero-images';
+import { SITE_URL } from '@/lib/constants';
 
 /** Avoid build-time DB requirement when `DATABASE_URL` is unset (same pattern as catalog). */
 export const dynamic = 'force-dynamic';
 
 const ogImages = [
   {
-    url: `${SITE_URL}${HOME_HERO_IMAGE}`,
-    width: 1200,
-    height: 630,
+    url: `${SITE_URL}${HERO_MAIN1.src}`,
+    width: HERO_MAIN1.width,
+    height: HERO_MAIN1.height,
     alt: 'Умная зарядка — генераторы и зарядные станции',
   },
   {
-    url: `${SITE_URL}${HOME_HERO_IMAGE_SECONDARY}`,
-    width: 1200,
-    height: 630,
+    url: `${SITE_URL}${HERO_MAIN2.src}`,
+    width: HERO_MAIN2.width,
+    height: HERO_MAIN2.height,
     alt: 'Умная зарядка — оборудование TSS и Pandora',
   },
 ];
