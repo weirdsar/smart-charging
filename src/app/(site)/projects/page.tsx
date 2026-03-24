@@ -1,7 +1,9 @@
 import { Card } from '@/components/ui';
 import { prisma } from '@/lib/prisma';
+import { resolveProjectCover } from '@/lib/project-covers';
 import type { Metadata } from 'next';
 import { ArrowRight, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -41,22 +43,26 @@ export default async function ProjectsPage() {
         <p className="mt-12 text-text-secondary">Проекты скоро появятся.</p>
       ) : (
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
+          {projects.map((project) => {
+            const cover = resolveProjectCover(
+              project.slug,
+              Array.isArray(project.images) ? project.images : []
+            );
+            const unoptimized = cover.endsWith('.svg') || cover.startsWith('data:');
+            return (
             <Card key={project.id} padding="none" hover className="flex h-full flex-col overflow-hidden">
               <Link href={`/projects/${project.slug}`} className="flex h-full flex-col">
-                <div className="relative aspect-video bg-surface-light">
-                  {project.images[0] ? (
-                    /* eslint-disable-next-line @next/next/no-img-element -- URLs from DB */
-                    <img
-                      src={project.images[0]}
-                      alt={project.title}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-sm text-text-secondary">
-                      [Фото проекта]
-                    </div>
-                  )}
+                <div className="relative aspect-video overflow-hidden bg-surface-light">
+                  <Image
+                    src={cover}
+                    alt={project.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    quality={80}
+                    unoptimized={unoptimized}
+                    referrerPolicy={cover.startsWith('http') ? 'no-referrer' : undefined}
+                  />
                 </div>
                 <div className="flex flex-1 flex-col p-6">
                   <h2 className="font-heading text-lg font-bold text-text-primary line-clamp-2">
@@ -76,7 +82,8 @@ export default async function ProjectsPage() {
                 </div>
               </Link>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
 

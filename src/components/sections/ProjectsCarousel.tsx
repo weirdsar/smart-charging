@@ -1,13 +1,14 @@
 'use client';
 
 import Card from '@/components/ui/Card';
-import { PLACEHOLDER_PROJECT_IMAGE } from '@/lib/constants';
 import type { HomepageProjectCard } from '@/lib/homepage-data';
 import { MOCK_PROJECTS } from '@/lib/mockData';
+import { resolveProjectCover } from '@/lib/project-covers';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -28,7 +29,7 @@ function toCarouselProjects(db: HomepageProjectCard[]): HomepageProjectCard[] {
     task: p.task ?? '',
     result: p.result ?? '',
     reviewAuthor: p.reviewAuthor ?? null,
-    imageUrl: p.images?.[0] ?? null,
+    imageUrl: resolveProjectCover(p.slug, p.images ?? []),
   }));
 }
 
@@ -139,18 +140,24 @@ export default function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
   );
 }
 
+const PROJECT_CARD_IMAGE_SIZES =
+  '(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw';
+
 function ProjectCard({ project }: { project: HomepageProjectCard }) {
-  const src = project.imageUrl ?? PLACEHOLDER_PROJECT_IMAGE;
+  const src = project.imageUrl;
+  const unoptimized = src.endsWith('.svg') || src.startsWith('data:');
 
   return (
     <Card padding="none" className="h-full overflow-hidden">
       <div className="relative aspect-video w-full overflow-hidden bg-surface-light">
-        {/* eslint-disable-next-line @next/next/no-img-element -- project cover + placeholder */}
-        <img
+        <Image
           src={src}
           alt={project.title}
-          className="absolute inset-0 h-full w-full object-cover"
-          loading="lazy"
+          fill
+          className="object-cover"
+          sizes={PROJECT_CARD_IMAGE_SIZES}
+          quality={80}
+          unoptimized={unoptimized}
           referrerPolicy={src.startsWith('http') ? 'no-referrer' : undefined}
         />
       </div>

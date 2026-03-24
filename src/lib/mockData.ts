@@ -1,3 +1,4 @@
+import { PROJECT_IMAGE_SETS } from '@/lib/project-covers';
 import type { IProduct, IProject } from '@/types';
 
 export const MOCK_PRODUCTS: Pick<
@@ -116,7 +117,7 @@ export const MOCK_PROJECTS: MockProject[] = [
     id: '1',
     title: 'Резервное электроснабжение коттеджного посёлка «Волжский»',
     slug: 'cottage-volzhsky',
-    images: [],
+    images: [...PROJECT_IMAGE_SETS['cottage-volzhsky']],
     task: 'Обеспечить бесперебойное электроснабжение 12 коттеджей при отключении сети.',
     solution:
       'Подобрали генератор по нагрузке, согласовали ввод АВР с местной сетевой организацией, выполнили монтаж кабельных линий и пусконаладку.',
@@ -130,7 +131,7 @@ export const MOCK_PROJECTS: MockProject[] = [
     id: '2',
     title: 'Зарядная инфраструктура для отеля «Саратов Плаза»',
     slug: 'hotel-saratov-plaza',
-    images: [],
+    images: [...PROJECT_IMAGE_SETS['hotel-saratov-plaza']],
     task: 'Установить зарядные станции для электромобилей гостей на парковке отеля.',
     solution:
       'Распределили мощность по фазам, установили учёт и защиту, смонтировали 4 настенные станции Pandora с управлением доступом.',
@@ -143,7 +144,7 @@ export const MOCK_PROJECTS: MockProject[] = [
     id: '3',
     title: 'Аварийное электроснабжение завода «СарПласт»',
     slug: 'factory-sarplast',
-    images: [],
+    images: [...PROJECT_IMAGE_SETS['factory-sarplast']],
     task: 'Предотвратить потерю продукции при отключении электричества на производстве.',
     solution:
       'Провели аудит нагрузок, установили дизельную электростанцию с синхронизацией щита и обучили персонал работе с резервом.',
@@ -156,7 +157,7 @@ export const MOCK_PROJECTS: MockProject[] = [
     id: '4',
     title: 'Генератор для строительной площадки ЖК «Кристалл»',
     slug: 'construction-kristall',
-    images: [],
+    images: [...PROJECT_IMAGE_SETS['construction-kristall']],
     task: 'Обеспечить электроснабжение на этапе строительства до подключения к сети.',
     solution:
       'Поставили мобильный дизельный агрегат в шумозащитном кожухе, организовали топливный контур и график обслуживания на период стройки.',

@@ -1,6 +1,7 @@
 /**
  * Server-only data for homepage sections (projects carousel).
  */
+import { resolveProjectCover } from '@/lib/project-covers';
 import { prisma } from '@/lib/prisma';
 
 export interface HomepageProjectCard {
@@ -10,7 +11,7 @@ export interface HomepageProjectCard {
   task: string;
   result: string;
   reviewAuthor: string | null;
-  imageUrl: string | null;
+  imageUrl: string;
 }
 
 export async function getHomepageProjects(limit = 6): Promise<HomepageProjectCard[]> {
@@ -40,7 +41,7 @@ export async function getHomepageProjects(limit = 6): Promise<HomepageProjectCar
       task: p.task,
       result: p.result,
       reviewAuthor: p.reviewAuthor,
-      imageUrl: imgs[0] ?? null,
+      imageUrl: resolveProjectCover(p.slug, imgs),
     };
   });
 }

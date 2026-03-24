@@ -1,5 +1,6 @@
 import { CategoryType, DocumentType, PrismaClient, UserRole } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { PROJECT_IMAGE_SETS } from '../src/lib/project-covers';
 import { loadPandoraJsonList, mapPandoraListToSeedProducts } from './seed-pandora-mapper';
 import { loadTssJsonList, mapTssListToSeedProducts, type SeedProductRow } from './seed-tss-mapper';
 
@@ -272,7 +273,7 @@ async function main() {
     {
       title: 'Резервное электроснабжение коттеджного посёлка «Волжский»',
       slug: 'cottage-volzhsky',
-      images: ['/images/placeholders/project.svg'] as string[],
+      images: [...PROJECT_IMAGE_SETS['cottage-volzhsky']],
       task: 'Обеспечить бесперебойное электроснабжение 12 коттеджей при отключении сети.',
       solution:
         'Спроектирована схема резервирования с общим узлом АВР и распределением на линии посёлка. Подобран генератор с запасом по мощности с учётом пусковых токов и сезонных пиков.',
@@ -285,7 +286,7 @@ async function main() {
     {
       title: 'Зарядная инфраструктура для отеля «Саратов Плаза»',
       slug: 'hotel-saratov-plaza',
-      images: ['/images/placeholders/project.svg'] as string[],
+      images: [...PROJECT_IMAGE_SETS['hotel-saratov-plaza']],
       task: 'Установить зарядные станции для электромобилей гостей на парковке отеля.',
       solution:
         'Выполнен расчёт нагрузки по фазам, согласовано подключение с сетевой организацией и выбраны четыре станции с балансировкой мощности. Прокладка кабельных трасс с учётом ландшафта.',
@@ -297,7 +298,7 @@ async function main() {
     {
       title: 'Аварийное электроснабжение завода «СарПласт»',
       slug: 'factory-sarplast',
-      images: ['/images/placeholders/project.svg'] as string[],
+      images: [...PROJECT_IMAGE_SETS['factory-sarplast']],
       task: 'Предотвратить потерю продукции при отключении электричества на производстве.',
       solution:
         'Проведён аудит потребителей критичных линий, установлен дизельный агрегат с синхронизацией щита и тестами под нагрузкой. Обучен персонал работе с резервом.',
@@ -309,7 +310,7 @@ async function main() {
     {
       title: 'Генератор для строительной площадки ЖК «Кристалл»',
       slug: 'construction-kristall',
-      images: ['/images/placeholders/project.svg'] as string[],
+      images: [...PROJECT_IMAGE_SETS['construction-kristall']],
       task: 'Обеспечить электроснабжение на этапе строительства до подключения к сети.',
       solution:
         'Поставлен передвижной контейнер с генератором, организованы временные линии к башенным кранам и бытовкам. Настроено техобслуживание по графику смен.',

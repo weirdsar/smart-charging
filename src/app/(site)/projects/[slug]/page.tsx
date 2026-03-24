@@ -2,9 +2,11 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { Button, Card } from '@/components/ui';
 import { SITE_URL } from '@/lib/constants';
 import { prisma } from '@/lib/prisma';
+import { resolveProjectImages } from '@/lib/project-covers';
 import { sanitizeHtml } from '@/lib/sanitize';
 import type { Metadata } from 'next';
 import { CheckCircle, Quote } from 'lucide-react';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 interface PageProps {
@@ -41,6 +43,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   if (!project) {
     notFound();
   }
+
+  const gallery = resolveProjectImages(
+    project.slug,
+    Array.isArray(project.images) ? project.images : []
+  );
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -82,16 +89,24 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           {project.title}
         </h1>
 
-        {project.images.length > 0 ? (
-          <div className="mt-8 grid grid-cols-2 gap-4">
-            {project.images.slice(0, 4).map((img, i) => (
-              /* eslint-disable-next-line @next/next/no-img-element -- URLs from DB */
-              <img
+        {gallery.length > 0 ? (
+          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {gallery.slice(0, 4).map((img, i) => (
+              <div
                 key={`${project.id}-${i}`}
-                src={img}
-                alt={`${project.title} — фото ${i + 1}`}
-                className="aspect-video w-full rounded-lg object-cover"
-              />
+                className="relative aspect-video w-full overflow-hidden rounded-lg bg-surface-light"
+              >
+                <Image
+                  src={img}
+                  alt={`${project.title} — фото ${i + 1}`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  quality={80}
+                  unoptimized={img.endsWith('.svg') || img.startsWith('data:')}
+                  referrerPolicy={img.startsWith('http') ? 'no-referrer' : undefined}
+                />
+              </div>
             ))}
           </div>
         ) : (
