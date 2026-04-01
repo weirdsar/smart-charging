@@ -78,42 +78,47 @@ export async function POST(req: NextRequest) {
       productUrl = `${SITE_URL}/catalog/${categoryPath}/${product.slug}`;
     }
 
-    void sendLeadNotification({
-      type: data.type,
-      name: data.name,
-      phone: normalizedPhone,
-      email,
-      message: data.message,
-      productTitle: product?.title,
-      productUrl: productUrl || undefined,
-      sourcePage: data.sourcePage,
-      utmData: data.utmData,
-    }).catch((err: unknown) => console.error('Telegram notification error:', err));
-
-    void sendMaxLeadNotification({
-      type: data.type,
-      name: data.name,
-      phone: normalizedPhone,
-      email,
-      message: data.message,
-      productTitle: product?.title,
-      productUrl: productUrl || undefined,
-      sourcePage: data.sourcePage,
-      utmData: data.utmData,
-    }).catch((err: unknown) => console.error('MAX notification error:', err));
+    const notificationTasks: Array<Promise<unknown>> = [
+      sendLeadNotification({
+        type: data.type,
+        name: data.name,
+        phone: normalizedPhone,
+        email,
+        message: data.message,
+        productTitle: product?.title,
+        productUrl: productUrl || undefined,
+        sourcePage: data.sourcePage,
+        utmData: data.utmData,
+      }),
+      sendMaxLeadNotification({
+        type: data.type,
+        name: data.name,
+        phone: normalizedPhone,
+        email,
+        message: data.message,
+        productTitle: product?.title,
+        productUrl: productUrl || undefined,
+        sourcePage: data.sourcePage,
+        utmData: data.utmData,
+      }),
+    ];
 
     if (email && (data.type === 'COMMERCIAL_OFFER' || data.type === 'CALLBACK')) {
       const emailType = data.type === 'COMMERCIAL_OFFER' ? 'B2B' : 'B2C';
       const subject =
         data.type === 'COMMERCIAL_OFFER' ? 'Ваш запрос получен' : 'Спасибо за обращение';
 
-      void sendEmail({
-        to: email,
-        subject,
-        html: getAutoReplyHtml(data.name, emailType),
-        leadMagnetType: emailType,
-      }).catch((err: unknown) => console.error('Email send error:', err));
+      notificationTasks.push(
+        sendEmail({
+          to: email,
+          subject,
+          html: getAutoReplyHtml(data.name, emailType),
+          leadMagnetType: emailType,
+        })
+      );
     }
+
+    await Promise.allSettled(notificationTasks);
 
     return NextResponse.json({ success: true, data: { id: lead.id } }, { status: 201 });
   } catch (error) {

@@ -61,32 +61,37 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    void sendLeadNotification({
-      type: 'QUIZ',
-      name: data.name.trim(),
-      phone: normalizedPhone,
-      email,
-      message: `Тип: ${result.recommendedType}, Мощность: ${result.recommendedPower}, АВР: ${result.needsAvr ? 'да' : 'нет'}`,
-      sourcePage: data.sourcePage,
-    }).catch((err: unknown) => console.error('Telegram notification error:', err));
-
-    void sendMaxLeadNotification({
-      type: 'QUIZ',
-      name: data.name.trim(),
-      phone: normalizedPhone,
-      email,
-      message: `Тип: ${result.recommendedType}, Мощность: ${result.recommendedPower}, АВР: ${result.needsAvr ? 'да' : 'нет'}`,
-      sourcePage: data.sourcePage,
-    }).catch((err: unknown) => console.error('MAX notification error:', err));
+    const notificationTasks: Array<Promise<unknown>> = [
+      sendLeadNotification({
+        type: 'QUIZ',
+        name: data.name.trim(),
+        phone: normalizedPhone,
+        email,
+        message: `Тип: ${result.recommendedType}, Мощность: ${result.recommendedPower}, АВР: ${result.needsAvr ? 'да' : 'нет'}`,
+        sourcePage: data.sourcePage,
+      }),
+      sendMaxLeadNotification({
+        type: 'QUIZ',
+        name: data.name.trim(),
+        phone: normalizedPhone,
+        email,
+        message: `Тип: ${result.recommendedType}, Мощность: ${result.recommendedPower}, АВР: ${result.needsAvr ? 'да' : 'нет'}`,
+        sourcePage: data.sourcePage,
+      }),
+    ];
 
     if (email) {
-      void sendEmail({
-        to: email,
-        subject: 'Результаты подбора генератора — Умная зарядка',
-        html: getAutoReplyHtml(data.name.trim(), 'B2C'),
-        leadMagnetType: 'B2C',
-      }).catch((err: unknown) => console.error('Quiz email error:', err));
+      notificationTasks.push(
+        sendEmail({
+          to: email,
+          subject: 'Результаты подбора генератора — Умная зарядка',
+          html: getAutoReplyHtml(data.name.trim(), 'B2C'),
+          leadMagnetType: 'B2C',
+        })
+      );
     }
+
+    await Promise.allSettled(notificationTasks);
 
     return NextResponse.json({ success: true, data: { id: lead.id, result } });
   } catch (error) {
