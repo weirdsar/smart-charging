@@ -27,6 +27,8 @@ export default function ProductDetailView({ product, breadcrumbs }: ProductDetai
   const galleryImages = normalizeProductImageList(product.images as unknown);
   const ogImage =
     galleryImages.length > 0 ? absoluteSiteUrl(galleryImages[0]) : undefined;
+  const priceNum = product.price.toNumber();
+  const priceOnRequest = priceNum === 0;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -36,8 +38,15 @@ export default function ProductDetailView({ product, breadcrumbs }: ProductDetai
     image: ogImage ? [ogImage] : undefined,
     offers: {
       '@type': 'Offer',
-      price: product.price.toNumber(),
-      priceCurrency: 'RUB',
+      ...(priceOnRequest
+        ? {
+            description: 'Цена по запросу',
+            priceCurrency: 'RUB',
+          }
+        : {
+            price: priceNum,
+            priceCurrency: 'RUB',
+          }),
       availability: product.inStock
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
@@ -57,7 +66,7 @@ export default function ProductDetailView({ product, breadcrumbs }: ProductDetai
           <div className="mb-3 flex flex-wrap gap-2">
             {!product.inStock ? <Badge variant="error">Нет в наличии</Badge> : null}
             {product.hasAvr ? <Badge variant="success">АВР</Badge> : null}
-            {product.priceOld ? <Badge variant="warning">Скидка</Badge> : null}
+            {product.priceOld && !priceOnRequest ? <Badge variant="warning">Скидка</Badge> : null}
           </div>
 
           <h1 className="mb-4 font-heading text-3xl font-bold text-text-primary">{product.title}</h1>
@@ -66,14 +75,18 @@ export default function ProductDetailView({ product, breadcrumbs }: ProductDetai
             <p className="mb-6 text-text-secondary">{product.shortDescription}</p>
           ) : null}
 
-          <div className="mb-8 flex flex-wrap items-baseline gap-3">
-            {product.priceOld ? (
-              <span className="text-xl text-text-secondary line-through">
-                {formatPrice(product.priceOld.toNumber())}
-              </span>
-            ) : null}
-            <span className="text-3xl font-bold text-accent">{formatPrice(product.price.toNumber())}</span>
-          </div>
+          {priceOnRequest ? (
+            <p className="mb-8 text-3xl font-bold text-accent">Цена по запросу</p>
+          ) : (
+            <div className="mb-8 flex flex-wrap items-baseline gap-3">
+              {product.priceOld ? (
+                <span className="text-xl text-text-secondary line-through">
+                  {formatPrice(product.priceOld.toNumber())}
+                </span>
+              ) : null}
+              <span className="text-3xl font-bold text-accent">{formatPrice(priceNum)}</span>
+            </div>
+          )}
 
           <ProductLeadActions productId={product.id} />
 

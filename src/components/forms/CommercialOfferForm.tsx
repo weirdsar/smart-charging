@@ -3,6 +3,7 @@
 import { Button, Input, Textarea } from '@/components/ui';
 import { useToast } from '@/components/ui/ToastProvider';
 import { trackFormSubmit } from '@/lib/analytics';
+import { triggerLeadNotifications } from '@/lib/leadNotificationsClient';
 import { commercialOfferSchema, type CommercialOfferFormValues } from '@/lib/validations';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FileText } from 'lucide-react';
@@ -50,17 +51,22 @@ export default function CommercialOfferForm({
           message: form.message?.trim() || undefined,
           ...(productId ? { productId } : {}),
           sourcePage: window.location.href,
+          deferNotifications: true,
         }),
       });
 
       const raw: unknown = await res.json();
       const parsed =
         typeof raw === 'object' && raw !== null && 'success' in raw
-          ? (raw as { success?: boolean; error?: string })
+          ? (raw as { success?: boolean; error?: string; data?: { id?: string } })
           : null;
 
       if (!res.ok || !parsed?.success) {
         throw new Error(parsed?.error ?? 'Ошибка отправки');
+      }
+
+      if (typeof parsed.data?.id === 'string') {
+        triggerLeadNotifications(parsed.data.id);
       }
 
       addToast({

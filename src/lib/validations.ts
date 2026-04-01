@@ -53,6 +53,7 @@ export const leadApiSubmissionSchema = z.object({
   productId: z.string().min(1).optional(),
   sourcePage: z.string().url('Некорректный URL источника'),
   utmData: z.record(z.string()).optional(),
+  deferNotifications: z.boolean().optional(),
 });
 
 export type CallbackFormValues = z.infer<typeof callbackFormSchema>;

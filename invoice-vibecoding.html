@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Счёт на оплату — разработка tts64.ru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1f26;
+      --muted: #5c6370;
+      --line: #d8dde5;
+      --surface: #f4f6f9;
+      --accent: #0d5c3b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--ink);
+      background: #fff;
+    }
+    .sheet {
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 14mm 16mm 20mm;
+    }
+    h1 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 0 0 0.35rem;
+      text-align: center;
+    }
+    .sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 640px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+    .box {
+      border: 1px solid var(--line);
+      padding: 0.65rem 0.75rem;
+      background: var(--surface);
+    }
+    .box h2 {
+      margin: 0 0 0.4rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .box p { margin: 0.2rem 0; }
+    .placeholder {
+      color: #8b9199;
+      font-style: italic;
+    }
+    table.inv {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 12px;
+    }
+    table.inv th,
+    table.inv td {
+      border: 1px solid var(--line);
+      padding: 0.45rem 0.5rem;
+      vertical-align: top;
+    }
+    table.inv th {
+      background: #eef1f5;
+      font-weight: 600;
+      text-align: center;
+    }
+    table.inv .num { text-align: center; width: 2.2rem; }
+    table.inv .qty { text-align: right; width: 4rem; }
+    table.inv .unit { text-align: right; width: 5.5rem; }
+    table.inv .sum { text-align: right; width: 6.5rem; }
+    .note {
+      border-left: 3px solid var(--accent);
+      padding: 0.6rem 0.75rem;
+      background: rgba(13, 92, 59, 0.06);
+      margin: 1rem 0;
+      font-size: 12px;
+    }
+    .note strong { color: var(--ink); }
+    .totals {
+      margin-top: 0.75rem;
+      margin-left: auto;
+      width: 100%;
+      max-width: 320px;
+      font-size: 12px;
+    }
+    .totals table { width: 100%; border-collapse: collapse; }
+    .totals td { padding: 0.35rem 0.5rem; border: 1px solid var(--line); }
+    .totals td:first-child { background: var(--surface); font-weight: 500; }
+    .totals td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+    .totals .grand td { font-weight: 600; font-size: 1.05em; }
+    .calc {
+      border: 1px solid var(--line);
+      padding: 0.75rem 0.85rem;
+      margin: 1rem 0;
+      font-size: 11.5px;
+      background: #fafbfc;
+    }
+    .calc h3 {
+      margin: 0 0 0.5rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .calc p { margin: 0.35rem 0; }
+    .calc ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+    .calc li { margin: 0.2rem 0; }
+    .money { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .sign {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      font-size: 11px;
+    }
+    .sign .line {
+      border-bottom: 1px solid var(--ink);
+      min-height: 2.5rem;
+      margin-top: 1.5rem;
+    }
+    @media print {
+      body { font-size: 11pt; }
+      .sheet { max-width: none; padding: 0; }
+      a[href^="http"]::after { content: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <h1>Счёт на оплату</h1>
+    <p class="sub">
+      № <span class="placeholder">___</span> от <span class="placeholder">«__» ________ 2026 г.</span>
+    </p>
+
+    <div class="grid-2">
+      <div class="box">
+        <h2>Исполнитель</h2>
+        <p><strong>Наименование:</strong> <span class="placeholder">ФИО / наименование ИП или ООО</span></p>
+        <p><strong>ИНН / КПП:</strong> <span class="placeholder">________ / ________</span></p>
+        <p><strong>ОГРН(ИП):</strong> <span class="placeholder">____________________</span></p>
+        <p><strong>Р/с:</strong> <span class="placeholder">____________________</span></p>
+        <p><strong>Банк:</strong> <span class="placeholder">____________________</span></p>
+        <p><strong>БИК / к/с:</strong> <span class="placeholder">_______ / ____________________</span></p>
+        <p><strong>Адрес:</strong> <span class="placeholder">____________________</span></p>
+        <p><strong>Тел. / e-mail:</strong> <span class="placeholder">____________________</span></p>
+      </div>
+      <div class="box">
+        <h2>Заказчик</h2>
+        <p><strong>Наименование:</strong> ООО «Умная зарядка»</p>
+        <p><strong>ИНН / КПП:</strong> <span class="placeholder">________ / ________</span></p>
+        <p><strong>Юр. адрес:</strong> <span class="placeholder">____________________</span></p>
+        <p><strong>Основание:</strong> <span class="placeholder">договор № ___ от __.__.____ г.</span> (при наличии)</p>
+      </div>
+    </div>
+
+    <p style="margin: 0.5rem 0 0.35rem; font-weight: 600;">
+      Предмет: оказание услуг по разработке и внедрению веб-платформы для сайта
+      <a href="https://tts64.ru/">https://tts64.ru/</a>
+      (см. техническое описание в отчёте <code>technical-report.md</code> / <code>technical-report.html</code>).
+    </p>
+
+    <table class="inv">
+      <thead>
+        <tr>
+          <th class="num">№</th>
+          <th>Наименование работ / услуг</th>
+          <th class="qty">Кол-во</th>
+          <th class="unit">Цена, ₽</th>
+          <th class="sum">Сумма, ₽</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="num">1</td>
+          <td>
+            Разработка и внедрение веб-платформы: публичный сайт (Next.js 14), каталог товаров,
+            страницы услуг, контентные разделы (блог, проекты, документы), SEO-база
+            (<code>sitemap</code>, <code>robots</code>, метаданные), административная панель (CMS).
+          </td>
+          <td class="qty">1</td>
+          <td class="unit money">300&nbsp;000,00</td>
+          <td class="sum money">300&nbsp;000,00</td>
+        </tr>
+        <tr>
+          <td class="num">2</td>
+          <td>
+            Приём и учёт заявок: API, сохранение лидов в PostgreSQL, ограничение частоты запросов,
+            интеграция уведомлений в мессенджер MAX (рабочая группа), при настройке — Telegram и e-mail;
+            оптимизация UX (фоновая отправка уведомлений).
+          </td>
+          <td class="qty">1</td>
+          <td class="unit money">120&nbsp;000,00</td>
+          <td class="sum money">120&nbsp;000,00</td>
+        </tr>
+        <tr>
+          <td class="num">3</td>
+          <td>
+            Развёртывание production-среды (хостинг Vercel, БД Neon PostgreSQL), настройка переменных окружения,
+            сопровождение передачи домена <code>tts64.ru</code> (по факту работ).
+          </td>
+          <td class="qty">1</td>
+          <td class="unit money">80&nbsp;000,00</td>
+          <td class="sum money">80&nbsp;000,00</td>
+        </tr>
+        <tr>
+          <td class="num">4</td>
+          <td>
+            Подготовка технического описания проекта для заказчика (отчёт в форматах Markdown и HTML).
+          </td>
+          <td class="qty">1</td>
+          <td class="unit money">50&nbsp;000,00</td>
+          <td class="sum money">50&nbsp;000,00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="calc">
+      <h3>Обоснование расчёта стоимости</h3>
+      <p>
+        Оценка выполнена по объёму фактически сданных работ (см. <code>technical-report.md</code>): публичный сайт,
+        каталог и CMS, заявки и интеграции, production-окружение, отчёт заказчику.
+      </p>
+      <p><strong>Методика:</strong> эквивалент трудозатрат «как при классической разработке» (чел.-дн. × условная ставка),
+        затем итог свёрнут в фиксированные позиции счёта. Условная ориентир-ставка для расчёта эквивалента:
+        <strong>15&nbsp;000&nbsp;₽ / чел.-день</strong> (смешанный уровень задач: frontend, backend, DevOps).
+      </p>
+      <ul>
+        <li>Поз. 1 — оценочно <strong>~20 чел.-дн.</strong> (каркас Next.js, каталог, админка, контентные разделы, SEO-основа) → 20 × 15&nbsp;000 = <strong>300&nbsp;000&nbsp;₽</strong>.</li>
+        <li>Поз. 2 — оценочно <strong>~8 чел.-дн.</strong> (API лидов, Prisma, MAX/Telegram/e-mail, антиспам, доработки UX) → 8 × 15&nbsp;000 = <strong>120&nbsp;000&nbsp;₽</strong>.</li>
+        <li>Поз. 3 — оценочно <strong>~5,3 чел.-дн.</strong> (Vercel, Neon, env, домен, деплой) → округл. <strong>80&nbsp;000&nbsp;₽</strong>.</li>
+        <li>Поз. 4 — оценочно <strong>~3,3 чел.-дн.</strong> (техотчёт md/html, вычитка) → округл. <strong>50&nbsp;000&nbsp;₽</strong>.</li>
+      </ul>
+      <p>
+        <strong>Итого эквивалент:</strong> ~36,6 чел.-дн.; <strong>сумма без НДС 550&nbsp;000&nbsp;₽</strong>
+        (средний эквивалент ~15&nbsp;000&nbsp;₽/день по пакету).
+        При использовании <strong>vibe coding</strong> (AI-ассистированная разработка) календарные сроки и число
+        «сырых» итераций сокращаются; цена в счёте зафиксирована за <strong>результат и приёмку</strong>, а не за почасовой учёт.
+      </p>
+    </div>
+
+    <div class="note">
+      <strong>Условие по способу разработки (vibe coding).</strong>
+      Работы выполнялись с применением AI-ассистированного программирования (в т.ч. инструменты вроде Cursor / LLM):
+      ускорена подготовка кода, рефакторинг и документация при сохранении контроля исполнителя за архитектурой,
+      безопасностью и приёмкой. Суммы в таблице отражают согласованный пакет работ по результату.
+    </div>
+
+    <div class="totals">
+      <table>
+        <tr>
+          <td>Всего наименований на сумму без НДС</td>
+          <td class="money">550&nbsp;000,00&nbsp;₽</td>
+        </tr>
+        <tr>
+          <td>НДС 20%</td>
+          <td class="money">110&nbsp;000,00&nbsp;₽</td>
+        </tr>
+        <tr class="grand">
+          <td>Всего к оплате с НДС</td>
+          <td class="money">660&nbsp;000,00&nbsp;₽</td>
+        </tr>
+      </table>
+    </div>
+
+    <p style="margin-top: 0.75rem; font-size: 11px; color: var(--muted);">
+      Если исполнитель на УСН и НДС не выставляется: к оплате <strong class="money">550&nbsp;000&nbsp;₽</strong> без НДС
+      (применить строки счёта согласно вашей системе налогообложения).
+    </p>
+
+    <p style="margin-top: 1rem; font-size: 11px; color: var(--muted);">
+      Срок оплаты: <strong>5</strong> календарных дней с даты выставления счёта (либо по договору).
+      Назначение платежа: оплата по счёту № <span class="placeholder">___</span> за разработку сайта tts64.ru.
+    </p>
+
+    <div class="sign">
+      <div>
+        <div>Исполнитель</div>
+        <div class="line"></div>
+        <div style="margin-top: 0.25rem; color: var(--muted);">подпись / МП</div>
+      </div>
+      <div>
+        <div>Заказчик (при необходимости)</div>
+        <div class="line"></div>
+        <div style="margin-top: 0.25rem; color: var(--muted);">подпись / МП</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

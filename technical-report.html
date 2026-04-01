@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Техническое описание — tts64.ru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1f26;
+      --muted: #5c6370;
+      --line: #e2e6ec;
+      --surface: #f6f8fb;
+      --accent: #c45a1a;
+      --accent-soft: rgba(196, 90, 26, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    header.doc {
+      border-bottom: 3px solid var(--ink);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(1.6rem, 4vw, 2rem);
+      font-weight: 600;
+      margin: 0 0 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .meta {
+      display: grid;
+      gap: 0.35rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .meta strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .meta a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .meta a:hover {
+      text-decoration: underline;
+    }
+
+    h2 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin: 2.25rem 0 0.85rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--line);
+    }
+
+    h2:first-of-type {
+      border-top: none;
+      padding-top: 0;
+      margin-top: 0;
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1.35rem 0 0.6rem;
+      color: var(--ink);
+    }
+
+    p {
+      margin: 0.65rem 0;
+    }
+
+    ul {
+      margin: 0.5rem 0 0.75rem;
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin: 0.35rem 0;
+    }
+
+    ul.lead-tasks li::marker {
+      color: var(--accent);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      margin: 0.65rem 0 1rem;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: 0.5rem 0.65rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--surface);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(246, 248, 251, 0.5);
+    }
+
+    .callout {
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    footer.doc-foot {
+      margin-top: 2.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    code {
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      font-size: 0.88em;
+      background: var(--surface);
+      padding: 0.12em 0.35em;
+      border-radius: 3px;
+    }
+
+    @media print {
+      body {
+        font-size: 11pt;
+      }
+
+      .wrap {
+        max-width: none;
+        padding: 0;
+      }
+
+      a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.85em;
+        color: var(--muted);
+      }
+
+      h2 {
+        page-break-after: avoid;
+      }
+
+      table {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="doc">
+      <h1>Техническое описание проекта tts64.ru</h1>
+      <div class="meta">
+        <div><strong>Документ:</strong> отчёт о технической реализации</div>
+        <div><strong>Сайт:</strong> <a href="https://tts64.ru/">https://tts64.ru/</a></div>
+        <div><strong>Заказчик:</strong> ООО «Умная зарядка»</div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2>1. Назначение проекта</h2>
+        <p>
+          Проект реализован как корпоративный сайт-каталог с упором на лидогенерацию, презентацию оборудования и услуг, а также самостоятельное управление контентом без сторонних конструкторов и внешней CRM.
+        </p>
+        <p><strong>Основные задачи:</strong></p>
+        <ul class="lead-tasks">
+          <li>привлечение заявок с сайта;</li>
+          <li>презентация каталога генераторов и зарядных станций;</li>
+          <li>публикация кейсов, документов, статей и SEO-страниц;</li>
+          <li>обработка заявок и передача их менеджерам;</li>
+          <li>управление сайтом через встроенную административную панель.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Технологический стек</h2>
+
+        <h3>Frontend</h3>
+        <table>
+          <thead>
+            <tr><th>Технология</th><th>Назначение</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Next.js 14 (App Router)</td><td>фреймворк, SSR/SSG, маршрутизация</td></tr>
+            <tr><td>React 18</td><td>UI</td></tr>
+            <tr><td>TypeScript 5</td><td>типизация</td></tr>
+            <tr><td>Tailwind CSS</td><td>стилизация</td></tr>
+            <tr><td>Headless UI</td><td>доступные UI-примитивы</td></tr>
+            <tr><td>Framer Motion</td><td>анимации</td></tr>
+            <tr><td>Lucide React</td><td>иконки</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Backend и данные</h3>
+        <table>
+          <thead>
+            <tr><th>Технология</th><th>Назначение</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Next.js API Routes</td><td>REST API заявок, каталога, админки</td></tr>
+            <tr><td>Node.js</td><td>серверная среда</td></tr>
+            <tr><td>Prisma ORM</td><td>доступ к БД, миграции</td></tr>
+            <tr><td>PostgreSQL</td><td>хранение контента и заявок</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Формы и валидация</h3>
+        <table>
+          <thead>
+            <tr><th>Технология</th><th>Назначение</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>React Hook Form</td><td>формы на клиенте</td></tr>
+            <tr><td>Zod</td><td>схемы валидации (клиент + сервер)</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Административная часть</h3>
+        <table>
+          <thead>
+            <tr><th>Технология</th><th>Назначение</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>NextAuth.js (v5)</td><td>вход в админку (credentials)</td></tr>
+            <tr><td>TipTap</td><td>WYSIWYG для блога и контента</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Интеграции</h3>
+        <table>
+          <thead>
+            <tr><th>Сервис</th><th>Назначение</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>MAX Bot API</td><td>уведомления о заявках в рабочую группу</td></tr>
+            <tr><td>Telegram (grammy)</td><td>дублирующие уведомления (при настройке)</td></tr>
+            <tr><td>SMTP / Nodemailer</td><td>email-уведомления и автоответы</td></tr>
+            <tr><td>Yandex Metrika</td><td>веб-аналитика</td></tr>
+            <tr><td>Google Analytics 4</td><td>веб-аналитика</td></tr>
+            <tr><td>Yandex Maps</td><td>карта на странице контактов (опционально)</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Инфраструктура и DevOps</h3>
+        <table>
+          <thead>
+            <tr><th>Компонент</th><th>Назначение</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Vercel</td><td>production-хостинг и деплой</td></tr>
+            <tr><td>Neon PostgreSQL</td><td>облачная БД в production</td></tr>
+            <tr><td>Git / GitHub</td><td>версионирование, CI/CD с Vercel</td></tr>
+            <tr><td>Docker, docker-compose</td><td>альтернативный вариант размещения на VPS</td></tr>
+          </tbody>
+        </table>
+
+        <p class="callout"><strong>Менеджер пакетов:</strong> pnpm.</p>
+      </section>
+
+      <section>
+        <h2>3. Реализованный функционал</h2>
+
+        <h3>Публичная часть</h3>
+        <ul>
+          <li>главная страница с презентацией компании и офферами;</li>
+          <li>каталог: портативные и промышленные генераторы, зарядные станции;</li>
+          <li>карточки и детальные страницы товаров;</li>
+          <li>проекты / кейсы;</li>
+          <li>блог;</li>
+          <li>документы и сертификаты;</li>
+          <li>контакты;</li>
+          <li>страницы услуг;</li>
+          <li>служебные страницы: политика конфиденциальности, <code>robots.txt</code>, <code>sitemap.xml</code>.</li>
+        </ul>
+
+        <h3>Конверсия и заявки</h3>
+        <ul>
+          <li>форма «Заказать звонок»;</li>
+          <li>форма «Обратная связь»;</li>
+          <li>форма «Получить КП»;</li>
+          <li>квиз подбора оборудования;</li>
+          <li>сравнение товаров (до нескольких позиций);</li>
+          <li>сохранение каждой заявки в базе данных;</li>
+          <li>уведомления в MAX (группа заявок), при настройке — Telegram и email;</li>
+          <li>защита от спама: ограничение частоты отправки заявок по IP;</li>
+          <li>разделение быстрого сохранения лида и фоновой отправки уведомлений, чтобы форма не «висела» при медленном ответе внешних API.</li>
+        </ul>
+
+        <h3>Административная панель (встроенная CMS)</h3>
+        <ul>
+          <li>авторизация администратора;</li>
+          <li>управление товарами и категориями;</li>
+          <li>управление проектами, блогом, документами;</li>
+          <li>просмотр заявок (лидов);</li>
+          <li>настройки сайта, страниц и фильтр-лендингов (по архитектуре проекта);</li>
+          <li>загрузка файлов (изображения, PDF).</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. Архитектурные решения</h2>
+        <ul>
+          <li><strong>Единый кодовый репозиторий:</strong> публичный сайт и админка в одном Next.js-приложении.</li>
+          <li><strong>Без внешней CRM:</strong> заявки хранятся в PostgreSQL; уведомления — через мессенджеры и почту.</li>
+          <li><strong>Безопасность контента:</strong> HTML из редактора и описаний товаров проходит санитизацию (allowlist).</li>
+          <li><strong>Надёжность заявок:</strong> лиды записываются в БД до отправки уведомлений; уведомления могут выполняться отдельным запросом после успешного сохранения.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>5. SEO и производительность</h2>
+        <ul>
+          <li>семантическая разметка и метаданные страниц;</li>
+          <li>динамический <code>sitemap.xml</code> и <code>robots.txt</code>;</li>
+          <li>JSON-LD на ключевых страницах (в т.ч. товары);</li>
+          <li>оптимизация изображений (<code>next/image</code>, Sharp).</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>6. Конфигурация и секреты</h2>
+        <p>
+          Параметры подключения (БД, токены ботов, SMTP, аналитика) задаются через <strong>переменные окружения</strong> на хостинге и не хранятся в репозитории. Пример структуры переменных описан в <code>.env.example</code> и в документации деплоя (<code>docs/DEPLOY_VERCEL.md</code>).
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Итог</h2>
+        <p>
+          Проект <strong>tts64.ru</strong> реализован как современная веб-платформа: корпоративный сайт с каталогом, встроенной CMS, приёмом заявок, интеграциями с мессенджерами и аналитикой, развёрнутой в production на <strong>Vercel</strong> с базой <strong>PostgreSQL (Neon)</strong>.
+        </p>
+      </section>
+    </main>
+
+    <footer class="doc-foot">Дата подготовки документа: апрель 2026 г.</footer>
+  </div>
+</body>
+</html>

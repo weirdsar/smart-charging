@@ -1,6 +1,8 @@
 'use client';
 
+import CallbackForm from '@/components/forms/CallbackForm';
 import { Badge, Button, Card } from '@/components/ui';
+import Modal from '@/components/ui/Modal';
 import { PLACEHOLDER_PRODUCT_IMAGE } from '@/lib/constants';
 import type { IProduct } from '@/types';
 import { formatPrice } from '@/lib/utils';
@@ -52,10 +54,16 @@ function fuelLabel(fuel: string | null | undefined): string {
 const CARD_IMAGE_SIZES =
   '(max-width: 639px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw';
 
+function isPriceOnRequest(price: number): boolean {
+  return price === 0;
+}
+
 export default function ProductCard({ product, href, imagePriority = false }: ProductCardProps) {
   const primaryUrl = product.images?.[0] ?? PLACEHOLDER_PRODUCT_IMAGE;
   const [imageSrc, setImageSrc] = useState(primaryUrl);
+  const [priceModalOpen, setPriceModalOpen] = useState(false);
   const fuel = fuelLabel(product.fuelType);
+  const onRequest = isPriceOnRequest(product.price);
 
   useEffect(() => {
     setImageSrc(product.images?.[0] ?? PLACEHOLDER_PRODUCT_IMAGE);
@@ -86,7 +94,7 @@ export default function ProductCard({ product, href, imagePriority = false }: Pr
             <Badge variant="error">Нет в наличии</Badge>
           ) : null}
           {product.hasAvr === true ? <Badge variant="success">АВР</Badge> : null}
-          {product.priceOld != null ? <Badge variant="warning">Скидка</Badge> : null}
+          {product.priceOld != null && !onRequest ? <Badge variant="warning">Скидка</Badge> : null}
         </div>
       </div>
 
@@ -106,25 +114,54 @@ export default function ProductCard({ product, href, imagePriority = false }: Pr
           {fuel ? <span>{fuel}</span> : null}
         </div>
 
-        <div className="mt-4 flex items-baseline gap-2">
-          {product.priceOld != null ? (
-            <>
-              <span className="text-sm text-text-secondary line-through">
-                {formatPrice(product.priceOld)}
-              </span>
+        {onRequest ? (
+          <div className="mt-4">
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              fullWidth
+              onClick={() => setPriceModalOpen(true)}
+            >
+              Цена по запросу
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-4 flex items-baseline gap-2">
+            {product.priceOld != null ? (
+              <>
+                <span className="text-sm text-text-secondary line-through">
+                  {formatPrice(product.priceOld)}
+                </span>
+                <span className="text-xl font-bold text-accent">{formatPrice(product.price)}</span>
+              </>
+            ) : (
               <span className="text-xl font-bold text-accent">{formatPrice(product.price)}</span>
-            </>
-          ) : (
-            <span className="text-xl font-bold text-accent">{formatPrice(product.price)}</span>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         <div className="mt-4">
-          <Button as="a" href={href} variant="primary" size="sm" fullWidth leftIcon={<Eye className="h-4 w-4" />}>
+          <Button as="a" href={href} variant={onRequest ? 'outline' : 'primary'} size="sm" fullWidth leftIcon={<Eye className="h-4 w-4" />}>
             Подробнее
           </Button>
         </div>
       </div>
+
+      <Modal
+        isOpen={priceModalOpen}
+        onClose={() => setPriceModalOpen(false)}
+        title="Цена по запросу"
+        size="sm"
+      >
+        <p className="mb-4 text-sm text-text-secondary">
+          Оставьте имя и телефон — менеджер свяжется и сообщит стоимость по товару «{product.title}».
+        </p>
+        <CallbackForm
+          productId={product.id}
+          onSuccess={() => setPriceModalOpen(false)}
+        />
+      </Modal>
     </Card>
   );
 }
