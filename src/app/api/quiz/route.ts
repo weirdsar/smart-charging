@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { sendLeadNotification } from '@/lib/telegram';
+import { sendMaxLeadNotification } from '@/lib/max';
 import { sendEmail, getAutoReplyHtml } from '@/lib/email';
 import { checkRateLimit } from '@/lib/rateLimit';
 import { calculateQuizResult } from '@/lib/quizConfig';
@@ -68,6 +69,15 @@ export async function POST(req: NextRequest) {
       message: `Тип: ${result.recommendedType}, Мощность: ${result.recommendedPower}, АВР: ${result.needsAvr ? 'да' : 'нет'}`,
       sourcePage: data.sourcePage,
     }).catch((err: unknown) => console.error('Telegram notification error:', err));
+
+    void sendMaxLeadNotification({
+      type: 'QUIZ',
+      name: data.name.trim(),
+      phone: normalizedPhone,
+      email,
+      message: `Тип: ${result.recommendedType}, Мощность: ${result.recommendedPower}, АВР: ${result.needsAvr ? 'да' : 'нет'}`,
+      sourcePage: data.sourcePage,
+    }).catch((err: unknown) => console.error('MAX notification error:', err));
 
     if (email) {
       void sendEmail({

@@ -37,9 +37,14 @@ pnpm prisma db seed
 | `NEXTAUTH_URL` | same as `AUTH_URL` |
 | `NEXT_PUBLIC_SITE_URL` | same public URL |
 | `NEXT_PUBLIC_COMPANY_PHONE` | e.g. `+79172100660` |
+| `MAX_BOT_TOKEN` | токен бота MAX (raw, без `Bearer`) |
+| `MAX_NOTIFY_CHAT_ID` | id группы заявок, напр. `-72895085062802` для `tts64-Заявки` (приоритетнее лички) |
+| `MAX_NOTIFY_USER_ID` | опционально: личные уведомления; если задан и `MAX_NOTIFY_CHAT_ID`, уходит в группу |
 | `TELEGRAM_*`, `SMTP_*`, analytics | as in `.env.example` (optional until forms need them) |
 
 5. **Deploy** (`vercel deploy --prod` or push to `main`).
+
+После смены переменных в Vercel сделайте **Redeploy** последнего деплоя (Deployments → ⋮ → Redeploy), иначе serverless-функции продолжают работать со старым env.
 
 Build uses `pnpm run build` (`prisma generate` + `next build`). No DB is required at build time for this app (dynamic sitemap).
 

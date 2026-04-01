@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { sendEmail, getAutoReplyHtml } from '@/lib/email';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { sendMaxLeadNotification } from '@/lib/max';
 import { sendLeadNotification } from '@/lib/telegram';
 import { leadApiSubmissionSchema } from '@/lib/validations';
 import { normalizePhone } from '@/lib/utils';
@@ -88,6 +89,18 @@ export async function POST(req: NextRequest) {
       sourcePage: data.sourcePage,
       utmData: data.utmData,
     }).catch((err: unknown) => console.error('Telegram notification error:', err));
+
+    void sendMaxLeadNotification({
+      type: data.type,
+      name: data.name,
+      phone: normalizedPhone,
+      email,
+      message: data.message,
+      productTitle: product?.title,
+      productUrl: productUrl || undefined,
+      sourcePage: data.sourcePage,
+      utmData: data.utmData,
+    }).catch((err: unknown) => console.error('MAX notification error:', err));
 
     if (email && (data.type === 'COMMERCIAL_OFFER' || data.type === 'CALLBACK')) {
       const emailType = data.type === 'COMMERCIAL_OFFER' ? 'B2B' : 'B2C';
